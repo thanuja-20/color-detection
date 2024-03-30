@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import pandas as pd
 import argparse
+import os
 
 #Creating argument parser to take image path from command line
 ap = argparse.ArgumentParser()
@@ -44,8 +45,20 @@ def draw_function(event, x,y,flags,param):
        
 cv2.namedWindow('image')
 cv2.setMouseCallback('image',draw_function)
+# Reading the image with opencv
+if not img_path or not os.path.isfile(img_path):
+    print("Error: Invalid image path")
+    sys.exit()
+img = cv2.imread(img_path)
+# Reading csv file with pandas and giving names to each column
+try:
+    index = ["color", "color_name", "hex", "R", "G", "B"]
+    csv = pd.read_csv('colors.csv', names=index, header=None)
+except pd.errors.ParserError:
+    print("Error: Invalid CSV file format")
+    sys.exit()
 
-while(1):
+while True:
 
     cv2.imshow("image",img)
     if (clicked):
